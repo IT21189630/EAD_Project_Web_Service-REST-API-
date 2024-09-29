@@ -1,4 +1,5 @@
-﻿using EAD_Web_Service_API.Data;
+﻿using BCrypt.Net;
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,9 @@ namespace EAD_Web_Service_API.Controllers
     {
         private readonly IMongoCollection<Admin> _admins;
 
-        public AdminController(MongoDBService mongoDBServeice)
+        public AdminController(MongoDBService mongoDBService)
         {
-            _admins = mongoDBServeice.database.GetCollection<Admin>("admins");
+            _admins = mongoDBService.database.GetCollection<Admin>("admins");
         }
 
         [HttpGet]
@@ -41,6 +42,10 @@ namespace EAD_Web_Service_API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(Admin admin)
         {
+            admin.Id = null;
+            admin.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(admin.Password, 10);
+            admin.Role = UserRoles.ADMIN;
+            admin.Profile_Picture = UserProfiles.Profiles["Admin"];
             await _admins.InsertOneAsync(admin);
             return CreatedAtAction(nameof(GetAdminById), new {id = admin.Id}, admin);
         }
