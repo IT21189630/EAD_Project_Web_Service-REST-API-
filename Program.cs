@@ -1,3 +1,5 @@
+using EAD_Web_Service_API.Data;
+
 namespace EAD_Web_Service_API
 {
     public class Program
@@ -12,6 +14,7 @@ namespace EAD_Web_Service_API
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddSingleton<MongoDBService>();
 
             var app = builder.Build();
 
