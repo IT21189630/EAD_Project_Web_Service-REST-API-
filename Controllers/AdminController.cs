@@ -28,7 +28,7 @@ namespace EAD_Web_Service_API.Controllers
         public async Task<ActionResult<Admin>> GetAdminById(string id)
         {
             var filter = Builders<Admin>.Filter.Eq(admin => admin.Id, id);
-            var admin = _admins.Find(filter).FirstOrDefault();
+            var admin = await _admins.Find(filter).FirstOrDefaultAsync();
 
             if (admin != null)
             {
