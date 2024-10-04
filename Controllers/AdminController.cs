@@ -12,10 +12,14 @@ namespace EAD_Web_Service_API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IMongoCollection<Admin> _admins;
+        private readonly IMongoCollection<CustomerSalesRep> _csrs;
+        private readonly IMongoCollection<Vendor> _vendors;
 
         public AdminController(MongoDBService mongoDBService)
         {
             _admins = mongoDBService.database.GetCollection<Admin>("admins");
+            _csrs = mongoDBService.database.GetCollection<CustomerSalesRep>("csrs");
+            _vendors = mongoDBService.database.GetCollection<Vendor>("vendors");
         }
 
         [HttpGet]
@@ -42,6 +46,32 @@ namespace EAD_Web_Service_API.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(Admin admin)
         {
+            // check if email is in admin collection
+            var adminFilter = Builders<Admin>.Filter.Eq(adm => adm.Email, admin.Email);
+            var duplicateAdmin = await _admins.Find(adminFilter).FirstOrDefaultAsync();
+
+            if (duplicateAdmin != null) { 
+                return BadRequest("Provided email is belong to an admin!");
+            }
+
+            // check if email is in vendor collection
+            var vendorFilter = Builders<Vendor>.Filter.Eq(ven => ven.Email, admin.Email);
+            var duplicateVendor = await _vendors.Find(vendorFilter).FirstOrDefaultAsync();
+
+            if (duplicateVendor != null)
+            {
+                return BadRequest("Provided email is belong to an vendor!");
+            }
+
+            // check if email is in csr collection
+            var SalesRepFilter = Builders<CustomerSalesRep>.Filter.Eq(csr => csr.Email, admin.Email);
+            var duplicateCSR = await _csrs.Find(SalesRepFilter).FirstOrDefaultAsync();
+
+            if (duplicateVendor != null)
+            {
+                return BadRequest("Provided email is belong to an csr!");
+            }
+
             admin.Id = null;
             admin.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(admin.Password, 10);
             admin.Role = UserRoles.ADMIN;

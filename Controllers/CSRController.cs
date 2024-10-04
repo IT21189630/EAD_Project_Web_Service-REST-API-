@@ -11,13 +11,52 @@ namespace EAD_Web_Service_API.Controllers
     public class CSRController : ControllerBase
     {
         private readonly IMongoCollection<CustomerSalesRep> _csrs;
+        private readonly IMongoCollection<Admin> _admins;
+        private readonly IMongoCollection<Vendor> _vendors;
+
         public CSRController(MongoDBService mongoDBService) {
             _csrs = mongoDBService.database.GetCollection<CustomerSalesRep>("csrs");
+            _vendors = mongoDBService.database.GetCollection<Vendor>("vendors");
+            _admins = mongoDBService.database.GetCollection<Admin>("admins");
+        }
+
+        [HttpGet]
+        public async Task<List<CustomerSalesRep>> getVendors()
+        {
+            return await _csrs.Find(FilterDefinition<CustomerSalesRep>.Empty).ToListAsync();
         }
 
         [HttpPost]
         public async Task<ActionResult> createCustomerSalesRep(CustomerSalesRep csr)
         {
+
+            // check if email is in admin collection
+            var adminFilter = Builders<Admin>.Filter.Eq(adm => adm.Email, csr.Email);
+            var duplicateAdmin = await _admins.Find(adminFilter).FirstOrDefaultAsync();
+
+            if (duplicateAdmin != null)
+            {
+                return BadRequest("Provided email is belong to an admin!");
+            }
+
+            // check if email is in vendor collection
+            var vendorFilter = Builders<Vendor>.Filter.Eq(ven => ven.Email, csr.Email);
+            var duplicateVendor = await _vendors.Find(vendorFilter).FirstOrDefaultAsync();
+
+            if (duplicateVendor != null)
+            {
+                return BadRequest("Provided email is belong to an vendor!");
+            }
+
+            // check if email is in csr collection
+            var SalesRepFilter = Builders<CustomerSalesRep>.Filter.Eq(rep => rep.Email, csr.Email);
+            var duplicateCSR = await _csrs.Find(SalesRepFilter).FirstOrDefaultAsync();
+
+            if (duplicateCSR != null)
+            {
+                return BadRequest("Provided email is belong to an csr!");
+            }
+
             csr.Id = null;
             csr.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(csr.NIC, 10);
             csr.Role = UserRoles.CSR;
@@ -40,6 +79,42 @@ namespace EAD_Web_Service_API.Controllers
             }
 
             return NotFound();
+        }
+
+        // update the csr password
+        [HttpPut("{id}/update_password")]
+        public async Task<ActionResult> UpdateVendorPassword(string id, [FromBody] string password)
+        {
+            var filter = Builders<CustomerSalesRep>.Filter.Eq(csr => csr.Id, id);
+            var vendor = await _csrs.Find(filter).FirstOrDefaultAsync();
+
+            if (vendor == null)
+            {
+                return NotFound("Sales rep not found.");
+            }
+
+            string hashedPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(password, 10);
+            var update = Builders<CustomerSalesRep>.Update
+                .Set(csr => csr.Password, hashedPassword)
+                .Set(csr => csr.First_Login, false);
+            var result = await _csrs.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount > 0)
+            {
+                return Ok("CSR password updated successfully.");
+            }
+
+            return BadRequest("CSR password could not be updated.");
+        }
+
+
+        // delete a product
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteCSR(string id)
+        {
+            var filter = Builders<CustomerSalesRep>.Filter.Eq(csr => csr.Id, id);
+            await _csrs.DeleteOneAsync(filter);
+            return Ok();
         }
     }
 }

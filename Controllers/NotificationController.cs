@@ -14,5 +14,42 @@ namespace EAD_Web_Service_API.Controllers
         public NotificationController(MongoDBService mongoDBService) {
             _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Notification>>> getNotificationByReceiverId()
+        {
+            return Ok();
+        }
+
+        //create notification
+        public async Task<ActionResult> SendNotification(Notification notification)
+        {
+            await _notifications.InsertOneAsync(notification);
+            return CreatedAtAction(nameof(GetNotificationById), new { id = notification.Id }, notification);
+        }
+
+        //get notification by id
+        public async Task<ActionResult<Notification>> GetNotificationById(string id)
+        {
+            var filter = Builders<Notification>.Filter.Eq(msg => msg.Id, id);
+            var notification = await _notifications.Find(filter).FirstOrDefaultAsync();
+
+            if (notification != null)
+            {
+                return Ok(notification);
+            }
+
+            return NotFound();
+        }
+
+        //get all notifications belong to a user
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<List<Notification>>> GetNotificationsByReceiver(string id)
+        {
+            var filter = Builders<Notification>.Filter.Eq(msg => msg.Receiver_Id, id);
+            var notifications = await _notifications.Find(filter).ToListAsync();
+
+            return Ok(notifications.Count > 0 ? notifications : new List<Notification>());
+        }
     }
 }

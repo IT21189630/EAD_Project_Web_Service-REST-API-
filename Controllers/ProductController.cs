@@ -11,9 +11,11 @@ namespace EAD_Web_Service_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IMongoCollection<Product> _products;
+        private readonly IMongoCollection<Notification> _notifications;
 
         public ProductController(MongoDBService mongoDBService) {
-            _products = mongoDBService.database.GetCollection<Product>("products");    
+            _products = mongoDBService.database.GetCollection<Product>("products");
+            _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
         }
 
         // get all products
@@ -75,6 +77,23 @@ namespace EAD_Web_Service_API.Controllers
             return Ok(product);
         }
 
+        //send notification method
+        private async Task SendNotification(string receiverId, string productName, bool status)
+        {
+            string visbility = status ? "Available" : "Unavailable";
+
+            var notification = new Notification
+            {
+                Receiver_Id = receiverId,
+                Subject = "Product Visibility Changed!",
+                Body = $"Administrator has changed the visibility of your product '{productName}' into {visbility}. You can see more information from your dashboard!",
+                Viewed = false,
+                Created_At = DateTime.UtcNow,
+            };
+
+            await _notifications.InsertOneAsync(notification);
+        }
+
         //change product visibility
         [HttpPut("toggle_availability/{id}")]
         public async Task<ActionResult> UpdateProductAvailability(string id)
@@ -85,6 +104,9 @@ namespace EAD_Web_Service_API.Controllers
             if (product != null) { 
                 product.Visibility = !product.Visibility;
                 await _products.ReplaceOneAsync(filter, product);
+
+                await SendNotification(product.Vendor_Id, product.Product_Name, product.Visibility);
+
                 return Ok();
             }
 

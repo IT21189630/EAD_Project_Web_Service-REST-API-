@@ -15,7 +15,9 @@ namespace EAD_Web_Service_API.Models
         public string Subject { get; set; }
         [BsonElement("body"), BsonRepresentation(BsonType.String)]
         public string Body { get; set; }
-        [BsonElement("viewed"), BsonRepresentation(BsonType.Int32)]
+        [BsonElement("viewed"), BsonRepresentation(BsonType.Boolean)]
         public bool Viewed { get; set; }
+        [BsonElement("created_at"), BsonRepresentation(BsonType.DateTime)]
+        public DateTime Created_At { get; set; }
     }
 }
