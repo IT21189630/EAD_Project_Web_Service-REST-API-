@@ -19,6 +19,12 @@ namespace EAD_Web_Service_API.Controllers
             _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<Customer>> GetCustomers()
+        {
+            return await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateCustomer(Customer customer)
         {
@@ -90,7 +96,7 @@ namespace EAD_Web_Service_API.Controllers
 
             if (customer != null)
             {
-                customer.Activation_Status = true;
+                customer.Activation_Status = !customer.Activation_Status;
                 await _customers.ReplaceOneAsync(filter, customer);
 
                 await SendNotification(customer.Id);
@@ -112,7 +118,7 @@ namespace EAD_Web_Service_API.Controllers
                 return Ok(deactivatedCustomers);
             }
 
-            return NotFound("No deactivated accounts found.");
+            return Ok(new List<Customer>());
         }
     }
 }

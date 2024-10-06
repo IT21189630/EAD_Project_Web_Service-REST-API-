@@ -113,13 +113,52 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Product state can not be updated!");
         }
 
+        //dispatch orders and update product remaining stong
+        [HttpPut("update_stock/{id}")]
+        public async Task<ActionResult> UpdateProductRemainingStock(string id, [FromBody] int qty)
+        {
+            var filter = Builders<Product>.Filter.Eq(product => product.Id, id);
+            var product = await _products.Find(filter).FirstOrDefaultAsync();
+
+            if (product != null)
+            {
+                //check available quantity is greater than requested quantity
+                if (product.Stock > qty) {
+                    product.Stock = product.Stock - qty;
+                    await _products.ReplaceOneAsync(filter, product);
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Not enough stock remaining");
+                }
+
+            }
+            return BadRequest("Product state can not be updated!");
+        }
+
         // update a product
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateProduct(Product product, string id)
         {
             var filter = Builders<Product>.Filter.Eq(prod => prod.Id, id);
-            await _products.ReplaceOneAsync(filter, product);
-            return Ok();
+            var update = Builders<Product>.Update
+                .Set(prod => prod.Product_Name, product.Product_Name)
+                .Set(prod => prod.Product_Category, product.Product_Category)
+                .Set(prod => prod.Image, product.Image)
+                .Set(prod => prod.Price, product.Price)
+                .Set(prod => prod.Stock, product.Stock);
+               
+            var result = await _products.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount > 0)
+            {
+                return Ok();
+            }
+            else
+            {
+                return NotFound("Product not found or no changes made.");
+            }
         }
 
         // delete a product

@@ -94,9 +94,16 @@ namespace EAD_Web_Service_API.Controllers
 
             if (order != null)
             {
-                order.Status = "cancelled";
-                await _orders.ReplaceOneAsync(filter, order);
-                return Ok();
+                if(order.Status == "processing")
+                {
+                    order.Status = "cancelled";
+                    await _orders.ReplaceOneAsync(filter, order);
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Target order is already dispatched or delivered");
+                }
             }
 
             return BadRequest("Order state can not be changed!");
@@ -111,9 +118,16 @@ namespace EAD_Web_Service_API.Controllers
 
             if (order != null)
             {
-                order.Status = "dispatched";
-                await _orders.ReplaceOneAsync(filter, order);
-                return Ok();
+                if (order.Status == "processing")
+                {
+                    order.Status = "dispatched";
+                    await _orders.ReplaceOneAsync(filter, order);
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Target order is not in processing state");
+                }
             }
 
             return BadRequest("Order state can not be changed!");
@@ -128,12 +142,17 @@ namespace EAD_Web_Service_API.Controllers
 
             if (order != null)
             {
-                order.Status = "delivered";
-                await _orders.ReplaceOneAsync(filter, order);
-
-                await SendDeliverNotification(order.Vendor_Id, order.Product_Id);
-
-                return Ok();
+                 if(order.Status == "dispatched")
+                {
+                    order.Status = "delivered";
+                    await _orders.ReplaceOneAsync(filter, order);
+                    await SendDeliverNotification(order.Customer_Id, order.Product_Id);
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Target order is not in dispatched state.");
+                }
             }
 
             return BadRequest("Order state can not be changed!");

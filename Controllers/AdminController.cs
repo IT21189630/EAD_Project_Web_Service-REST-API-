@@ -22,12 +22,14 @@ namespace EAD_Web_Service_API.Controllers
             _vendors = mongoDBService.database.GetCollection<Vendor>("vendors");
         }
 
+        // get all administrators
         [HttpGet]
         public async Task<IEnumerable<Admin>> GetAdmins()
         {
             return await _admins.Find(FilterDefinition<Admin>.Empty).ToListAsync();
         }
 
+        // get administrator by object id
         [HttpGet("{id}")]
         public async Task<ActionResult<Admin>> GetAdminById(string id)
         {
@@ -42,7 +44,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
-
+        // create new administrator account
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(Admin admin)
         {
@@ -80,6 +82,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetAdminById), new {id = admin.Id}, admin);
         }
 
+        // update an admin using the object id
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateAdmin(Admin admin, string id)
         {
@@ -88,6 +91,7 @@ namespace EAD_Web_Service_API.Controllers
             return Ok();
         }
 
+        // delete an admin using the object id
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAdmin(string id)
         {
