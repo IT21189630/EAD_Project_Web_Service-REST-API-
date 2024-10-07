@@ -60,6 +60,40 @@ namespace EAD_Web_Service_API.Controllers
             await _notifications.InsertOneAsync(notification);
         }
 
+
+        //send notification(cancelling the order) - for customer
+        private async Task SendCancelOrderNotificationForCustomer(string receiverId, string productId, string note)
+        {
+            var filter = Builders<Product>.Filter.Eq(prd => prd.Id, productId);
+            var product = await _products.Find(filter).FirstOrDefaultAsync();
+
+            var notification = new Notification
+            {
+                Receiver_Id = receiverId,
+                Subject = "Order Cancelled!",
+                Body = $"This message is to notify you that product {product.Product_Name} order has been cancelled! We informed the relevant vendor as the reason for cancellation is {note}.",
+                Viewed = false,
+                Created_At = DateTime.UtcNow,
+            };
+
+            await _notifications.InsertOneAsync(notification);
+        }
+
+        //send notification(cancelling the order) - for vendor
+        private async Task SendCancelOrderNotificationForVendor(string receiverId, string orderId, string note)
+        {
+            var notification = new Notification
+            {
+                Receiver_Id = receiverId,
+                Subject = "Order Cancelled!",
+                Body = $"This message is to notify you that order {orderId} order has been cancelled! reason for cancellation is {note}. sorry for the inconvenience.",
+                Viewed = false,
+                Created_At = DateTime.UtcNow,
+            };
+
+            await _notifications.InsertOneAsync(notification);
+        }
+
         //create new order
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
@@ -87,7 +121,7 @@ namespace EAD_Web_Service_API.Controllers
 
         //cancel order
         [HttpPut("cancel_order/{id}")]
-        public async Task<ActionResult> CancelOrder(string id)
+        public async Task<ActionResult> CancelOrder(string id, [FromBody] string note)
         {
             var filter = Builders<Order>.Filter.Eq(order => order.Id, id);
             var order = await _orders.Find(filter).FirstOrDefaultAsync();
@@ -98,6 +132,8 @@ namespace EAD_Web_Service_API.Controllers
                 {
                     order.Status = "cancelled";
                     await _orders.ReplaceOneAsync(filter, order);
+                    await SendCancelOrderNotificationForCustomer(order.Customer_Id, order.Product_Id, note);
+                    await SendCancelOrderNotificationForVendor(order.Vendor_Id, order.Id, note);
                     return Ok();
                 }
                 else
@@ -105,7 +141,6 @@ namespace EAD_Web_Service_API.Controllers
                     return BadRequest("Target order is already dispatched or delivered");
                 }
             }
-
             return BadRequest("Order state can not be changed!");
         }
 
