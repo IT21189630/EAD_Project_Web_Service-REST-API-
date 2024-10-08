@@ -188,5 +188,20 @@ namespace EAD_Web_Service_API.Controllers
             await _products.DeleteOneAsync(filter);
             return Ok();
         }
+
+        //get products by category
+        [HttpGet("category/{category_name}")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategory(string category_name)
+        {
+            var filter = Builders<Product>.Filter.Eq(product => product.Product_Category, category_name);
+            var products = await _products.Find(filter).ToListAsync();
+
+            if (products.Count > 0)
+            {
+                return Ok(products);
+            }
+
+            return NotFound("No products created yet.");
+        }
     }
 }
