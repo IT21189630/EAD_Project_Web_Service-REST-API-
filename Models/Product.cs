@@ -2,7 +2,7 @@
 // File: Product.cs
 // Author: IT21189630
 // Date Created: 2024-10-01
-// Description: This class contains all the properties related to a notification.
+// Description: This class contains all the properties related to a product.
 // Version: 1.0.0
 // ---------------------------------------------------------------------------
 using EAD_Web_Service_API.Data;
