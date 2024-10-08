@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: CategoryController.cs
+// Author: IT21211164
+// Date Created: 2024-09-30
+// Description: This file contains the logic for handling category retrieving and adding.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +33,7 @@ namespace EAD_Web_Service_API.Controllers
         }
 
 
-
+        //create a category
         [HttpPost]
         public async Task<ActionResult<Category>> CreateProduct(Category category)
         {

@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: Cart.cs
+// Author: IT21211164
+// Date Created: 2024-09-30
+// Description: This file is a class. It contains the properties related to a cartItem.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+
+using EAD_Web_Service_API.Data;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 

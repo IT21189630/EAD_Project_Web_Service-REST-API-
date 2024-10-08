@@ -1,4 +1,13 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: CartController.cs
+// Author: IT21211164
+// Date Created: 2024-09-30
+// Description: This file contains the logic for handling cart management 
+//              operations such as retrieving, adding, updating, and deleting cartItem.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +33,7 @@ namespace EAD_Web_Service_API.Controllers
         }
 
 
-
+        //create cart item
         [HttpPost]
         public async Task<ActionResult<Cart>> CreateCartItem(Cart cartItem)
         {
@@ -34,7 +43,7 @@ namespace EAD_Web_Service_API.Controllers
 
  
 
-        // update a product
+        // update a cart item
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateCartItem(Cart cartItem, string id)
         {
@@ -58,7 +67,7 @@ namespace EAD_Web_Service_API.Controllers
             }
         }
 
-        // delete a product
+        // delete a cart item
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCartItem(string id)
         {
