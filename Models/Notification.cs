@@ -1,4 +1,11 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: Notification.cs
+// Author: IT21189630
+// Date Created: 2024-10-01
+// Description: This class contains all the properties related to a notification.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 

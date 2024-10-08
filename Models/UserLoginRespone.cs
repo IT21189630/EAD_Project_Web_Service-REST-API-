@@ -1,4 +1,11 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: UserLoginResponse.cs
+// Author: IT21189630
+// Date Created: 2024-09-29
+// Description: This class contains all the properties related to a login response.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 
 namespace EAD_Web_Service_API.Models
 {

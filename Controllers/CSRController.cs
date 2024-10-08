@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: CSRController.cs
+// Author: IT21189630
+// Date Created: 2024-09-29
+// Description: This file contains the logic for handling customer sales representatives (CSR) management 
+//              operations such as retrieving, adding, updating, and deleting CSR.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +28,14 @@ namespace EAD_Web_Service_API.Controllers
             _admins = mongoDBService.database.GetCollection<Admin>("admins");
         }
 
+        //get all CSR accounts
         [HttpGet]
         public async Task<List<CustomerSalesRep>> getVendors()
         {
             return await _csrs.Find(FilterDefinition<CustomerSalesRep>.Empty).ToListAsync();
         }
 
+        //create new customer CSR account
         [HttpPost]
         public async Task<ActionResult> createCustomerSalesRep(CustomerSalesRep csr)
         {
@@ -67,6 +77,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(getSalesRepById), new { id = csr.Id }, csr);
         }
 
+        // get CSR details by id
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomerSalesRep>> getSalesRepById(string id)
         {
@@ -81,7 +92,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
-        // update the csr password
+        // update the CSR password
         [HttpPut("{id}/update_password")]
         public async Task<ActionResult> UpdateVendorPassword(string id, [FromBody] string password)
         {
@@ -108,7 +119,7 @@ namespace EAD_Web_Service_API.Controllers
         }
 
 
-        // delete a product
+        // delete a CSR account
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCSR(string id)
         {

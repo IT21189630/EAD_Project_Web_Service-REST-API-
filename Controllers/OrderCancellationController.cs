@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: OrderCancellationController.cs
+// Author: IT21189630, IT21189494, IT21211164
+// Date Created: 2024-10-06
+// Description: This file contains the logic for handling order cancellation requests management 
+//              operations such as retrieving, creating, state updating, and deleting a cancellation request.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,7 +58,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
-        // update cancellation request state when solving
+        // update cancellation request state when solving (by IT21189630)
         [HttpPut("solve/{id}")]
         public async Task<ActionResult> UpdateCancellation(string id)
         {

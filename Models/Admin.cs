@@ -1,4 +1,11 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: Admin.cs
+// Author: IT21189630
+// Date Created: 2024-09-29
+// Description: This file is a class. It contains the properties related to an administrator.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: OrderController.cs
+// Author: IT21189630, IT21189494, IT21211164
+// Date Created: 2024-10-01
+// Description: This file contains the logic for handling order management 
+//              operations such as retrieving, adding, state updating an order.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +50,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound("No orders yet.");
         }
 
-        //send notification(deliver the order)
+        //send notification(deliver the order) - by IT21189630
         private async Task SendDeliverNotification(string receiverId, string productId)
         {
             var filter = Builders<Product>.Filter.Eq(prd => prd.Id, productId);
@@ -61,7 +69,7 @@ namespace EAD_Web_Service_API.Controllers
         }
 
 
-        //send notification(cancelling the order) - for customer
+        //send notification(cancelling the order) - for customer (by IT21189630)
         private async Task SendCancelOrderNotificationForCustomer(string receiverId, string productId, string note)
         {
             var filter = Builders<Product>.Filter.Eq(prd => prd.Id, productId);
@@ -79,7 +87,7 @@ namespace EAD_Web_Service_API.Controllers
             await _notifications.InsertOneAsync(notification);
         }
 
-        //send notification(cancelling the order) - for vendor
+        //send notification(cancelling the order) - for vendor (by IT21189630)
         private async Task SendCancelOrderNotificationForVendor(string receiverId, string orderId, string note)
         {
             var notification = new Notification
@@ -105,6 +113,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
         }
 
+        //get an order using object id
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrderById(string id)
         {
@@ -119,7 +128,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
-        //cancel order
+        //cancel order (by IT21189630)
         [HttpPut("cancel_order/{id}")]
         public async Task<ActionResult> CancelOrder(string id, [FromBody] string note)
         {
@@ -144,7 +153,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Order state can not be changed!");
         }
 
-        //dispatch order
+        //dispatch order (by IT21189630)
         [HttpPut("dispatch_order/{id}")]
         public async Task<ActionResult> DispatchOrder(string id)
         {
@@ -168,7 +177,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Order state can not be changed!");
         }
 
-        //deliver order
+        //deliver order (by IT21189630)
         [HttpPut("deliver_order/{id}")]
         public async Task<ActionResult> DeliverOrder(string id)
         {

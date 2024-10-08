@@ -1,4 +1,13 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: CustomerController.cs
+// Author: IT21189630, IT21189494, IT21211164
+// Date Created: 2024-10-06
+// Description: This file contains the logic for handling customer management 
+//              operations such as retrieving, adding, updating, and deleting customers.
+//              also contains the logic for account activation status management and notification dispatch
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,12 +28,14 @@ namespace EAD_Web_Service_API.Controllers
             _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
         }
 
+        //get all customers
         [HttpGet]
         public async Task<IEnumerable<Customer>> GetCustomers()
         {
             return await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
         }
 
+        //create a new customer
         [HttpPost]
         public async Task<ActionResult> CreateCustomer(Customer customer)
         {
@@ -44,6 +55,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
         }
 
+        //get customer details by object id
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomerById(string id)
         {
@@ -58,13 +70,14 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
+        //handle the notification mechansim when customer account reactivated (by IT21189630)
         private async Task SendNotification(string receiverId)
         {
             var notification = new Notification
             {
                 Receiver_Id = receiverId,
                 Subject = "Your Account Activation Status Changed!",
-                Body = "CSR has reactivated ypur account! Now you can use your account.",
+                Body = "CSR has changed the activation status of your account account!",
                 Viewed = false,
                 Created_At = DateTime.UtcNow,
             };
@@ -72,6 +85,7 @@ namespace EAD_Web_Service_API.Controllers
             await _notifications.InsertOneAsync(notification);
         }
 
+        // deactivate customer account (by IT21189630)
         [HttpPut("deactivate/{id}")]
         public async Task<ActionResult> DeactivateAccount(string id)
         {
@@ -88,6 +102,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Customer activation status can not be updated!");
         }
 
+        // activate or deactivate customer account (by IT21189630)
         [HttpPut("activate/{id}")]
         public async Task<ActionResult> ActivateAccount(string id)
         {
@@ -107,6 +122,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Customer activation status can not be updated!");
         }
 
+        // get all customer accounts which are in deactivated state (by IT21189630)
         [HttpGet("deactivated")]
         public async Task<ActionResult<List<Customer>>> GetDeactivatedAccounts()
         {

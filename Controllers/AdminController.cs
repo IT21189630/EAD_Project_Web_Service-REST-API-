@@ -1,4 +1,12 @@
-﻿using BCrypt.Net;
+﻿// ---------------------------------------------------------------------------
+// File: AdminController.cs
+// Author: IT21189630
+// Date Created: 2024-09-29
+// Description: This file contains the logic for handling admin management 
+//              operations such as retrieving, adding, updating, and deleting admins.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using BCrypt.Net;
 using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;

@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: NotificationController.cs
+// Author: IT21189630
+// Date Created: 2024-10-01
+// Description: This file contains the logic for dispatch notifications, retrieve
+//              notifications using receiver id and object id.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +24,7 @@ namespace EAD_Web_Service_API.Controllers
         }
 
 
-        //create notification
+        //create new notification
         [HttpPost]
         public async Task<ActionResult> SendNotification(Notification notification)
         {

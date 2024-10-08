@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: VendorController.cs
+// Author: IT21189630
+// Date Created: 2024-09-29
+// Description: This file contains the logic for handling vendor management 
+//              operations such as retrieving, adding, updating, and deleting vendor.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +29,14 @@ namespace EAD_Web_Service_API.Controllers
             _admins = mongoDBService.database.GetCollection<Admin>("admins");
         }
 
+        // get all vendors
         [HttpGet]
         public async Task<List<Vendor>> getVendors()
         {
             return await _vendors.Find(FilterDefinition<Vendor>.Empty).ToListAsync();
         }
 
+        //create new vendor account
         [HttpPost]
         public async Task<ActionResult> createVendor(Vendor vendor)
         {
@@ -107,7 +117,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Vendor password could not be updated.");
         }
 
-        // delete a product
+        // delete a vendor
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteVendor(string id)
         {

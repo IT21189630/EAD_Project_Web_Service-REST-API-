@@ -1,4 +1,12 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: ProductController.cs
+// Author: IT21189630
+// Date Created: 2024-10-01
+// Description: This file contains the logic for handling product management 
+//              operations such as retrieving, creating, updating, and deleting products.
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +20,12 @@ namespace EAD_Web_Service_API.Controllers
     {
         private readonly IMongoCollection<Product> _products;
         private readonly IMongoCollection<Notification> _notifications;
+        private readonly IMongoCollection<Order> _orders;
 
         public ProductController(MongoDBService mongoDBService) {
             _products = mongoDBService.database.GetCollection<Product>("products");
             _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
+            _orders = mongoDBService.database.GetCollection<Order>("orders");
         }
 
         // get all products
@@ -55,7 +65,7 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound("No products created yet.");
         }
 
-
+        //create new product
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(Product product)
         {
@@ -113,7 +123,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Product state can not be updated!");
         }
 
-        //dispatch orders and update product remaining stong
+        //dispatch orders and update product remaining stock
         [HttpPut("update_stock/{id}")]
         public async Task<ActionResult> UpdateProductRemainingStock(string id, [FromBody] int qty)
         {
@@ -165,6 +175,15 @@ namespace EAD_Web_Service_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(string id)
         {
+
+            var ongoingOrderFilter = Builders<Order>.Filter.Eq(order => order.Product_Id, id);
+            var ongoingOrder = await _orders.Find(ongoingOrderFilter).FirstOrDefaultAsync();
+
+            if(ongoingOrder != null)
+            {
+                return BadRequest("Product is essential for ongoing order");
+            }
+
             var filter = Builders<Product>.Filter.Eq(product => product.Id, id);
             await _products.DeleteOneAsync(filter);
             return Ok();
