@@ -1,4 +1,11 @@
-﻿using EAD_Web_Service_API.Data;
+﻿// ---------------------------------------------------------------------------
+// File: Customer.cs
+// Author: IT21189494,IT21211164
+// Date Created: 2024-10-04
+// Description: This class contains all the properties related to a Customer
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
+using EAD_Web_Service_API.Data;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
