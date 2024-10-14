@@ -201,5 +201,20 @@ namespace EAD_Web_Service_API.Controllers
 
             return BadRequest("Order state can not be changed!");
         }
+
+        //get an orders using customer id (by IT21211164)
+        [HttpGet("customer/{id}")]
+        public async Task<ActionResult<List<Order>>> GetOrdersByCusId(string id)
+        {
+            var filter = Builders<Order>.Filter.Eq(order => order.Customer_Id, id);
+
+            var orders = await _orders.Find(filter).ToListAsync();
+
+            if (orders.Count > 0)
+            {
+                return Ok(orders);
+            }
+            return NotFound("No orders yet.");
+        }
     }
 }

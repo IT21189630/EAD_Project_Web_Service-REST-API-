@@ -50,6 +50,8 @@ namespace EAD_Web_Service_API.Controllers
             var filter = Builders<Cart>.Filter.Eq(prod => prod.Id, id);
             var update = Builders<Cart>.Update
                 .Set(prod => prod.Product_Name, cartItem.Product_Name)
+                .Set(prod => prod.Product_Id, cartItem.Product_Id)
+                .Set(prod => prod.Vendor_Id, cartItem.Vendor_Id)
                 .Set(prod => prod.Price, cartItem.Price)
                 .Set(prod => prod.Number_Of_Items, cartItem.Number_Of_Items)
                 .Set(prod => prod.Image, cartItem.Image);
@@ -59,7 +61,7 @@ namespace EAD_Web_Service_API.Controllers
 
             if (result.ModifiedCount > 0)
             {
-                return Ok();
+                return Ok(cartItem);
             }
             else
             {

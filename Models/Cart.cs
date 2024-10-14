@@ -21,6 +21,12 @@ namespace EAD_Web_Service_API.Models
         [BsonElement("product_name"), BsonRepresentation(BsonType.String)]
         public string Product_Name { get; set; }
 
+        [BsonElement("product_id"), BsonRepresentation(BsonType.String)]
+        public string Product_Id { get; set; }
+
+        [BsonElement("vendor_id"), BsonRepresentation(BsonType.String)]
+        public string Vendor_Id { get; set; }
+
         [BsonElement("price"), BsonRepresentation(BsonType.Double)]
         public double Price { get; set; }
 
