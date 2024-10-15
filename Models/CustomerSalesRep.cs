@@ -31,6 +31,6 @@ namespace EAD_Web_Service_API.Models
         [BsonElement("first_login"), BsonRepresentation(BsonType.Boolean)]
         public bool First_Login { get; set; }
         [BsonElement("status"), BsonRepresentation(BsonType.Boolean)]
-        public bool Status { get; set; }
+        public bool? Status { get; set; }
     }
 }

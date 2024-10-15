@@ -1,3 +1,9 @@
+// ---------------------------------------------------------------------------
+// File: Program.cs
+// Author: IT21189630, IT21189494, IT21211164
+// Date Created: 2024-09-29
+// Version: 1.0.0
+// ---------------------------------------------------------------------------
 using EAD_Web_Service_API.Data;
 
 namespace EAD_Web_Service_API
@@ -16,6 +22,7 @@ namespace EAD_Web_Service_API
             builder.Services.AddSwaggerGen();
             builder.Services.AddSingleton<MongoDBService>();
 
+            //cors policy
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",

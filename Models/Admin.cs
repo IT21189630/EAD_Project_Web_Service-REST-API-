@@ -26,5 +26,6 @@ namespace EAD_Web_Service_API.Models
         public UserRoles Role {  get; set; }
         [BsonElement("profile_picture"), BsonRepresentation(BsonType.String)]
         public string? Profile_Picture {  get; set; }
+        public bool? Status {  get; set; }
     }
 }

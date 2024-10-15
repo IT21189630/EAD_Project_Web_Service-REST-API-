@@ -86,8 +86,26 @@ namespace EAD_Web_Service_API.Controllers
             admin.Password = BCrypt.Net.BCrypt.EnhancedHashPassword(admin.Password, 10);
             admin.Role = UserRoles.ADMIN;
             admin.Profile_Picture = UserProfiles.Profiles["Admin"];
+            admin.Status = true;
             await _admins.InsertOneAsync(admin);
             return CreatedAtAction(nameof(GetAdminById), new {id = admin.Id}, admin);
+        }
+
+        //toggle account activation status
+        [HttpPut("activate_admin/{id}")]
+        public async Task<ActionResult> ToggleAccountActivation(string id)
+        {
+            var filter = Builders<Admin>.Filter.Eq(admin => admin.Id, id);
+            var targetAdmin = await _admins.Find(filter).FirstOrDefaultAsync();
+
+            if (targetAdmin != null)
+            {
+                targetAdmin.Status = !targetAdmin.Status;
+                await _admins.ReplaceOneAsync(filter, targetAdmin);
+                return Ok();
+            }
+
+            return BadRequest("Admin account activation status can not be updated!");
         }
 
         // update an admin using the object id
