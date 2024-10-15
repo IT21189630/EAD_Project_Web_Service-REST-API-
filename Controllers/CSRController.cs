@@ -92,6 +92,23 @@ namespace EAD_Web_Service_API.Controllers
             return NotFound();
         }
 
+        //toggle account activation status
+        [HttpPut("activate_csr/{id}")]
+        public async Task<ActionResult> ToggleAccountActivation(string id)
+        {
+            var filter = Builders<CustomerSalesRep>.Filter.Eq(csr => csr.Id, id);
+            var targetCSR = await _csrs.Find(filter).FirstOrDefaultAsync();
+
+            if (targetCSR != null)
+            {
+                targetCSR.Status = !targetCSR.Status;
+                await _csrs.ReplaceOneAsync(filter, targetCSR);
+                return Ok();
+            }
+
+            return BadRequest("CSR account activation status can not be updated!");
+        }
+
         // update the CSR password
         [HttpPut("{id}/update_password")]
         public async Task<ActionResult> UpdateVendorPassword(string id, [FromBody] string password)

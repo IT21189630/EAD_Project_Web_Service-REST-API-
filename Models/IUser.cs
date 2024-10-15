@@ -17,5 +17,6 @@ namespace EAD_Web_Service_API.Models
         public string Username { get; set; }
         public string Profile_Picture { get; set; }
         public UserRoles Role { get; set; }
+        public bool? Status { get; set; }
     }
 }

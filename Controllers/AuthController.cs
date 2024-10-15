@@ -58,8 +58,15 @@ namespace EAD_Web_Service_API.Controllers
             }
 
             // verify the password
+            
             if (BCrypt.Net.BCrypt.EnhancedVerify(request.password, user.Password))
             {
+                // check if account is in active state
+                if (user.Status == false)
+                {
+                    return BadRequest("Your account has been deactivated!");
+                }
+
                 return new UserLoginRespone
                 {
                     Id = user.Id,

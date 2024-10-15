@@ -117,6 +117,23 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Vendor password could not be updated.");
         }
 
+        //toggle account activation status
+        [HttpPut("activate_vendor/{id}")]
+        public async Task<ActionResult> ToggleAccountActivation(string id)
+        {
+            var filter = Builders<Vendor>.Filter.Eq(vendor => vendor.Id, id);
+            var targetVendor = await _vendors.Find(filter).FirstOrDefaultAsync();
+
+            if (targetVendor != null)
+            {
+                targetVendor.Status = !targetVendor.Status;
+                await _vendors.ReplaceOneAsync(filter, targetVendor);
+                return Ok();
+            }
+
+            return BadRequest("Vendor account activation status can not be updated!");
+        }
+
         // delete a vendor
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteVendor(string id)
