@@ -25,14 +25,14 @@ namespace EAD_Web_Service_API.Controllers
             _cancellations = mongoDBService.database.GetCollection<CancellationRequest>("cancellations");
         }
 
-        //get all cancellation requests
+        //get all cancellation requests (by IT21189494)
         [HttpGet]
         public async Task<IEnumerable<CancellationRequest>> GetAllRequests()
         {
             return await _cancellations.Find(FilterDefinition<CancellationRequest>.Empty).ToListAsync();
         }
 
-        //create a cancellation request
+        //create a cancellation request (by IT21211164)
         [HttpPost]
         public async Task<ActionResult<CancellationRequest>> CreateCancellationRequest(CancellationRequest cr)
         {
@@ -43,7 +43,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetCancellationRequestById), new { id = cr.Id }, cr);
         }
 
-        // get a cancellation request by id
+        // get a cancellation request by id (by IT21189494)
         [HttpGet("{id}")]
         public async Task<ActionResult<CancellationRequest>> GetCancellationRequestById(string id)
         {
@@ -76,7 +76,7 @@ namespace EAD_Web_Service_API.Controllers
             return BadRequest("Product state can not be updated!");
         }
 
-        // delete an cancellation request using the id
+        // delete an cancellation request using the id (by IT21189494)
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteCancellation(string id)
         {

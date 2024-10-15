@@ -28,14 +28,14 @@ namespace EAD_Web_Service_API.Controllers
             _products = mongoDBService.database.GetCollection<Product>("products");
         }
 
-        //get all orders
+        //get all orders (by IT21189494)
         [HttpGet]
         public async Task<IEnumerable<Order>> GetAllOrders()
         {
             return await _orders.Find(FilterDefinition<Order>.Empty).ToListAsync();
         }
 
-        //get orders by vendor id
+        //get orders by vendor id (by IT21189494)
         [HttpGet("vendor/{id}")]
         public async Task<ActionResult<List<Order>>> GetOrdersByVendorId(string id)
         {
@@ -102,7 +102,7 @@ namespace EAD_Web_Service_API.Controllers
             await _notifications.InsertOneAsync(notification);
         }
 
-        //create new order
+        //create new order (by IT21211164)
         [HttpPost]
         public async Task<ActionResult<Order>> CreateOrder(Order order)
         {
@@ -113,7 +113,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetOrderById), new { id = order.Id }, order);
         }
 
-        //get an order using object id
+        //get an order using object id (by IT21211164)
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrderById(string id)
         {

@@ -28,14 +28,14 @@ namespace EAD_Web_Service_API.Controllers
             _notifications = mongoDBService.database.GetCollection<Notification>("notifications");
         }
 
-        //get all customers
+        //get all customers (by IT21189494)
         [HttpGet]
         public async Task<IEnumerable<Customer>> GetCustomers()
         {
             return await _customers.Find(FilterDefinition<Customer>.Empty).ToListAsync();
         }
 
-        //create a new customer
+        //create a new customer (by IT21189494)
         [HttpPost]
         public async Task<ActionResult> CreateCustomer(Customer customer)
         {
@@ -55,7 +55,7 @@ namespace EAD_Web_Service_API.Controllers
             return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
         }
 
-        //get customer details by object id
+        //get customer details by object id (by IT21211164)
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomerById(string id)
         {
