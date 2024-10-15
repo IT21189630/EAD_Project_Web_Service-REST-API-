@@ -7,6 +7,7 @@
 //              also contains the logic for account activation status management and notification dispatch
 // Version: 1.0.0
 // ---------------------------------------------------------------------------
+using Amazon.Runtime.Internal;
 using EAD_Web_Service_API.Data;
 using EAD_Web_Service_API.Models;
 using Microsoft.AspNetCore.Http;
@@ -135,6 +136,27 @@ namespace EAD_Web_Service_API.Controllers
             }
 
             return Ok(new List<Customer>());
+        }
+
+
+        [HttpPost("login")]
+        public async Task<ActionResult<Customer>> Login(LoginRequest loginRequest)
+        {
+            var user = Builders<Customer>.Filter.Eq(customer => customer.Email, loginRequest.Email);
+            var customer = await _customers.Find(user).FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                return Unauthorized("Invalid username or password");
+            }
+            else if (BCrypt.Net.BCrypt.EnhancedVerify(loginRequest.Password, customer.Password))
+            {
+                return Ok(customer);
+            }
+            else
+            {
+                return BadRequest("Invalid username or password");
+            }
         }
     }
 }
