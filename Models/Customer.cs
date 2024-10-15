@@ -26,7 +26,7 @@ namespace EAD_Web_Service_API.Models
         public string Address { get; set; }
         [BsonElement("profile_picture"), BsonRepresentation(BsonType.String)]
         public string? Profile_Picture { get; set; }
-        [BsonElement("acitvation_status"), BsonRepresentation(BsonType.Boolean)]
+        [BsonElement("activation_status"), BsonRepresentation(BsonType.Boolean)]
         public bool Activation_Status { get; set; }
     }
 }
